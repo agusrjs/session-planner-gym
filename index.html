@@ -93,7 +93,11 @@ document.addEventListener('DOMContentLoaded', async function() {
           }
         }
 
-        blobUrls[uuid] = URL.createObjectURL(new Blob([finalBytes], { type: entry.mime }));
+        const _mime = entry.mime || '';
+        const _blobData = _mime.indexOf('javascript') !== -1
+          ? new TextDecoder('utf-8').decode(finalBytes)
+          : finalBytes;
+        blobUrls[uuid] = URL.createObjectURL(new Blob([_blobData], { type: _mime }));
       } catch (err) {
         console.error('Failed to decode asset ' + uuid + ':', err);
         blobUrls[uuid] = URL.createObjectURL(new Blob([], { type: entry.mime }));
